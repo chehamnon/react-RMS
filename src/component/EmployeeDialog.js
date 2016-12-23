@@ -118,6 +118,12 @@ class EmployeeDialog extends Component {
       firstName: '',
       lastName: '',
       phone: '',
+      dob: new Object,
+      nationality: '',
+      suspendDate: new Object,
+      hireDate: new Object,
+      email: '',
+      subDivision: '',
     };
     this.handleAddEmployee = this.props.handleAddEmployee.bind(this);
   }
@@ -135,10 +141,32 @@ class EmployeeDialog extends Component {
 
   handleRequestClose = () => {
     this.setState({
+      stepIndex: 0,
       open: false,
+      firstName: '',
+      lastName: '',
+      gender: '',
+      dob: new Object,
+      nationality: '',
+      maritalStatus: '',
+      phone: '',
+      subDivision: '',
+      status: '',
+      suspendDate: new Object,
+      hireDate: new Object,
+      grade: '',
+      division: '',
+      email: '',
+      location: '',
+      img: '',
     });
   }
 
+  handleBack(){
+    this.setState({
+      stepIndex: this.state.stepIndex - 1,
+    });
+  }
   handleNext(){
     var isValid = true;
 
@@ -180,25 +208,6 @@ class EmployeeDialog extends Component {
     }
     this.handleAddEmployee(newEmployee);
     this.handleRequestClose();
-    this.setState({
-         open: false,
-         firstName: '',
-         lastName: '',
-         gender: '',
-         dob: new Object,
-         nationality: '',
-         maritalStatus: '',
-         phone: '',
-         subDivision: '',
-         status: '',
-         suspendDate: new Object,
-         hireDate: new Object,
-         grade: '',
-         division: '',
-         email: '',
-         location: '',
-         img: '',
-     });
    }
 
   handleChange = (event, index, value) => this.setState({value});
@@ -259,7 +268,7 @@ class EmployeeDialog extends Component {
           <div>
             <Avatar icon={<MapsPlace />} backgroundColor={indigo500} style={styles.avatarStyles}/>
             <List style={styles.listStyles}>
-              <ListItem
+              <ListItem style={styles.text}
                 primaryText="Gedung Wirausaha, 8th Floor"
                 secondaryText="Jl. HR. Rasuna Said Kav C5 Jakarta Selatan, 12940"
               />
@@ -272,7 +281,7 @@ class EmployeeDialog extends Component {
           <div>
             <Avatar icon={<MapsPlace />} backgroundColor={indigo500} style={styles.avatarStyles}/>
             <List style={styles.listStyles}>
-              <ListItem
+              <ListItem style={styles.text}
                 primaryText="Jl. Sidobali No. 2 Muja Muju, Umbulharjo"
                 secondaryText="Yogyakarta, 55165"
               />
@@ -285,7 +294,7 @@ class EmployeeDialog extends Component {
             <div>
               <Avatar icon={<MapsPlace />} backgroundColor={indigo500} style={styles.avatarStyles}/>
               <List style={styles.listStyles}>
-                <ListItem
+                <ListItem style={styles.text}
                   primaryText="Jl. Prof Surya Sumantri No: 8-D"
                   secondaryText="Bandung, 40164"
                 />
@@ -297,7 +306,7 @@ class EmployeeDialog extends Component {
             <div>
               <Avatar icon={<MapsPlace />} backgroundColor={indigo500} style={styles.avatarStyles}/>
               <List style={styles.listStyles}>
-                <ListItem
+                <ListItem style={styles.text}
                   primaryText="Jl. Bypass Ngurah Rai gg. Mina Utama No. 1"
                   secondaryText="​Suwung 80223, Bali​"
                 />
@@ -340,8 +349,8 @@ class EmployeeDialog extends Component {
                   floatingLabelStyle={styles.floatingLabelStyle}
                   value={this.state.value}
                   onChange={this.handleChange}>
-                  <MenuItem value={"Male"} primaryText="Male" />
-                  <MenuItem value={"Female"} primaryText="Female" />
+                  <MenuItem style={styles.itemStyles} value={"Male"} primaryText="Male" />
+                  <MenuItem style={styles.itemStyles} value={"Female"} primaryText="Female" />
                 </SelectField>
                 <br/>
                   <DatePicker
@@ -449,13 +458,15 @@ class EmployeeDialog extends Component {
           return (
             <div style={styles.leftColumn}>
                   <SelectField
+                      style={styles.text}
                       value={this.state.location}
                       floatingLabelText="Location"
+                      floatingLabelStyle={styles.floatingLabelStyle}
                       onChange={this.handleChangeOffice.bind(this)} >
-                      <MenuItem value={"JKT"} primaryText="Jakarta" />
-                      <MenuItem value={"YOG"} primaryText="Yogyakarta" />
-                      <MenuItem value={"BDG"} primaryText="Bandung" />
-                      <MenuItem value={"BALI"} primaryText="Bali" />
+                      <MenuItem style={styles.itemStyles} value={"JKT"} primaryText="Jakarta" />
+                      <MenuItem style={styles.itemStyles} value={"YOG"} primaryText="Yogyakarta" />
+                      <MenuItem style={styles.itemStyles} value={"BDG"} primaryText="Bandung" />
+                      <MenuItem style={styles.itemStyles} value={"BALI"} primaryText="Bali" />
                   </SelectField>
               {this.getOfficeAddress(this.state.location)}
             </div>
@@ -468,6 +479,7 @@ class EmployeeDialog extends Component {
           label="Back"
           primary={true}
           disabled={this.state.stepIndex === 0? true : false}
+          onTouchTap={this.handleBack.bind(this)}
       />,
       <RaisedButton
         label={this.state.stepIndex === 5 ? 'Finish' : 'Next'}
