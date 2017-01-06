@@ -3,35 +3,35 @@
  * which incorporates components provided by Material-UI.
  */
 import React, {Component} from 'react';
-import Avatar from 'material-ui/Avatar';
-import Dialog from 'material-ui/Dialog';
-import TextField from 'material-ui/TextField';
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
-import FlatButton from 'material-ui/FlatButton';
-import RaisedButton from 'material-ui/RaisedButton';
-import IconButton from 'material-ui/IconButton';
-import DatePicker from 'material-ui/DatePicker';
-import ContentAddCircle from 'material-ui/svg-icons/content/add-circle';
-import {List, ListItem} from 'material-ui/List';
-import {pink500, indigo500, indigo100, indigo400, white} from 'material-ui/styles/colors';
-
-import {Step, Stepper, StepButton} from 'material-ui/Stepper';
-import NotificationWc from 'material-ui/svg-icons/notification/wc';
-import SocialSchool from 'material-ui/svg-icons/social/school';
-import SocialPerson from 'material-ui/svg-icons/social/person';
-import ActionRestore from 'material-ui/svg-icons/action/restore';
-import ActionHome from 'material-ui/svg-icons/action/home';
-import MapsPlace from 'material-ui/svg-icons/maps/place';
-import ImagePhotoCamera from 'material-ui/svg-icons/image/photo-camera';
-
+import update from 'react-addons-update';
 import Dropzone from 'react-dropzone';
 
+import Avatar from 'material-ui/Avatar';
+import ActionHome from 'material-ui/svg-icons/action/home';
+import ActionRestore from 'material-ui/svg-icons/action/restore';
+import ContentAddCircle from 'material-ui/svg-icons/content/add-circle';
+import DatePicker from 'material-ui/DatePicker';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
+import IconButton from 'material-ui/IconButton';
+import ImagePhotoCamera from 'material-ui/svg-icons/image/photo-camera';
+import MenuItem from 'material-ui/MenuItem';
+import MapsPlace from 'material-ui/svg-icons/maps/place';
+import NotificationWc from 'material-ui/svg-icons/notification/wc';
+import RaisedButton from 'material-ui/RaisedButton';
+import SelectField from 'material-ui/SelectField';
+import SocialSchool from 'material-ui/svg-icons/social/school';
+import SocialPerson from 'material-ui/svg-icons/social/person';
+import TextField from 'material-ui/TextField';
+import {List, ListItem} from 'material-ui/List';
+import {pink500, indigo500, indigo100, indigo400, white} from 'material-ui/styles/colors';
+import {Step, Stepper, StepButton} from 'material-ui/Stepper';
+
+import Design from '../data/Design';
+import GradeDialog from '../component/GradeDialog';
+import JobFamilyDropDown from '../component/JobFamilyDropDown';
+
 const styles = {
-  text: {
-    paddingLeft: 0,
-    fontSize: 14,
-  },
 
   leftColumn: {
     float: 'left',
@@ -85,18 +85,10 @@ const styles = {
     color: pink500,
   },
 
-  floatingLabelStyle: {
-    color: indigo500,
-    fontSize: 18,
-  },
-
   dialogStyles: {
     minHeight: 500,
   },
 
-  itemStyles: {
-    fontSize: 12,
-  },
 }
 
 class EmployeeDialog extends Component {
@@ -105,27 +97,30 @@ class EmployeeDialog extends Component {
 
     this.state = {
       open: false,
-      value:"Male",
-      status:"Contract",
-      marital: "Single",
-      grade: "SE-JP",
-      division:"CDC Asterx",
-      stepIndex: 0,
-      location:"BALI",
       files: [],
-      img: require("../images/person-flat.png"),
+      stepIndex: 0,
       isRequired: '',
-      firstName: '',
-      lastName: '',
-      phone: '',
-      dob: new Object,
-      nationality: '',
-      suspendDate: new Object,
-      hireDate: new Object,
-      email: '',
-      subDivision: '',
+      employee: {
+         id: '',
+         firstName: '',
+         lastName: '',
+         gender: 'Male',
+         dob: new Object,
+         nationality: '',
+         maritalStatus: 'Single',
+         phone: '',
+         subDivision: '',
+         status: 'Contract',
+         suspendDate: new Object,
+         hireDate: new Object,
+         grade: 'SE-JP',
+         division: 'CDC Asterx',
+         email: '',
+         location: 'BALI',
+         jobFamily: 'SE',
+         img: require("../images/person-flat.png"),
+       }
     };
-    this.handleAddEmployee = this.props.handleAddEmployee.bind(this);
   }
 
   onDrop(acceptedFiles) {
@@ -141,26 +136,38 @@ class EmployeeDialog extends Component {
 
   handleRequestClose = () => {
     this.setState({
-      stepIndex: 0,
       open: false,
-      firstName: '',
-      lastName: '',
-      gender: '',
-      dob: new Object,
-      nationality: '',
-      maritalStatus: '',
-      phone: '',
-      subDivision: '',
-      status: '',
-      suspendDate: new Object,
-      hireDate: new Object,
-      grade: '',
-      division: '',
-      email: '',
-      location: '',
-      img: '',
+      files: [],
+      stepIndex: 0,
+      isRequired: '',
+      employee: {
+         id: '',
+         firstName: '',
+         lastName: '',
+         gender: 'Male',
+         dob: new Object,
+         nationality: '',
+         maritalStatus: 'Single',
+         phone: '',
+         subDivision: '',
+         status: 'Contract',
+         suspendDate: new Object,
+         hireDate: new Object,
+         grade: 'SE-JP',
+         division: 'CDC Asterx',
+         email: '',
+         jobFamily: '',
+         location: 'BALI',
+         img: this.state.files.length > 0 ? this.state.employee.img : require("../images/person-flat.png"),
+       }
     });
   }
+
+  setNewEmployee(newEmployee) {
+     this.setState({
+         employee: newEmployee
+     })
+   }
 
   handleBack(){
     this.setState({
@@ -169,8 +176,9 @@ class EmployeeDialog extends Component {
   }
   handleNext(){
     var isValid = true;
-
-    if(this.state.firstName===''|| this.state.lasttName==='' || this.state.phone===''){
+    console.log("Next");
+    console.log(this.state.employee);
+    if(this.state.employee.firstName===''|| this.state.employee.lasttName==='' || this.state.employee.phone==='' || this.state.employee.email===''){
       isValid = false;
     }
 
@@ -186,72 +194,22 @@ class EmployeeDialog extends Component {
   }
 
   handleCreate(){
-    var id = this.state.firstName +" "+ this.state.lastName;
-    var newEmployee = {
-         id: id.replace(/ /g, '_'),
-         firstName: this.state.firstName,
-         lastName: this.state.lastName,
-         gender: this.state.gender,
-         dob: this.state.dob,
-         nationality: this.state.nationality,
-         maritalStatus: this.state.maritalStatus,
-         phone: this.state.phone,
-         subDivision: this.state.subDivision,
-         status: this.state.status,
-         suspendDate: this.state.suspendDate,
-         hireDate: this.state.hireDate,
-         grade: this.state.grade,
-         division: this.state.division,
-         email: this.state.email,
-         location: this.state.location,
-         img: this.state.files.length > 0 ? this.state.files[0].preview : this.state.img
-    }
-    this.handleAddEmployee(newEmployee);
+    let generatedId = this.state.employee.firstName +" "+ this.state.employee.lastName;
+    let image= this.state.files.length > 0 ? this.state.files[0].preview : this.state.employee.img;
+    generatedId= generatedId.replace(/ /g, '_');
+    var newEmployee = update(this.state, {
+     employee: {id: {$set: generatedId}, img: {$set: image}}
+    });
+    var employeesData = this.props.employees
+    console.log(newEmployee);
+    employeesData.push(newEmployee.employee)
+    this.props.setEmployees(employeesData);
     this.handleRequestClose();
    }
 
-  handleChange = (event, index, value) => this.setState({value});
-  handleChangeStatus = (event, index, status) => this.setState({status});
-  handleChangeMarital = (event, index, marital) => this.setState({marital});
-  handleChangeGrade = (event, index, grade) => this.setState({grade});
-  handleChangeDivision = (event, index, division) => this.setState({division});
-  handleChangeFirstName(event) {
-    this.setState({
-        firstName: event.target.value,
-    });
-  }
-
-  handleChangeLastName(event) {
-      this.setState({
-          lastName: event.target.value
-      });
-  }
   handleChangeDOB(event, date) {
     this.setState({
         dob: date
-    });
-  }
-  handleChangeEmail(event) {
-    this.setState({
-        email: event.target.value
-    });
-  }
-
-  handleChangeSubDivision(event) {
-    this.setState({
-        subDivision: event.target.value
-    });
-  }
-
-  handleChangePhone(event) {
-    this.setState({
-        phone: event.target.value
-    });
-  }
-
-  handleChangeNationality(event) {
-    this.setState({
-        nationality: event.target.value
     });
   }
 
@@ -261,6 +219,36 @@ class EmployeeDialog extends Component {
     });
   }
 
+  handleChangeValue(event, type) {
+    //console.log(event.target.value);
+    //console.log(type);
+    var nextState = update(this.state, {
+         employee: {[type]: {$set: event.target.value}}
+    });
+    this.setState({
+      employee: nextState.employee,
+    })
+    // console.log(this.state);
+  }
+
+  handleChangeSelectValue(event, index, value, type) {
+        var nextState = update(this.state, {
+             employee: {[type]: {$set: value}}
+        });
+        this.setState({
+          employee: nextState.employee,
+        })
+  }
+
+  handleChangeDateValue(event, date, type) {
+    var nextState = update(this.state, {
+         employee: {[type]: {$set: date}}
+    });
+    this.setState({
+      employee: nextState.employee,
+    })
+  }
+
   getOfficeAddress(location) {
     switch (location) {
       case "JKT":
@@ -268,7 +256,7 @@ class EmployeeDialog extends Component {
           <div>
             <Avatar icon={<MapsPlace />} backgroundColor={indigo500} style={styles.avatarStyles}/>
             <List style={styles.listStyles}>
-              <ListItem style={styles.text}
+              <ListItem style={Design.inputText}
                 primaryText="Gedung Wirausaha, 8th Floor"
                 secondaryText="Jl. HR. Rasuna Said Kav C5 Jakarta Selatan, 12940"
               />
@@ -281,7 +269,7 @@ class EmployeeDialog extends Component {
           <div>
             <Avatar icon={<MapsPlace />} backgroundColor={indigo500} style={styles.avatarStyles}/>
             <List style={styles.listStyles}>
-              <ListItem style={styles.text}
+              <ListItem style={Design.inputText}
                 primaryText="Jl. Sidobali No. 2 Muja Muju, Umbulharjo"
                 secondaryText="Yogyakarta, 55165"
               />
@@ -294,7 +282,7 @@ class EmployeeDialog extends Component {
             <div>
               <Avatar icon={<MapsPlace />} backgroundColor={indigo500} style={styles.avatarStyles}/>
               <List style={styles.listStyles}>
-                <ListItem style={styles.text}
+                <ListItem style={Design.inputText}
                   primaryText="Jl. Prof Surya Sumantri No: 8-D"
                   secondaryText="Bandung, 40164"
                 />
@@ -306,7 +294,7 @@ class EmployeeDialog extends Component {
             <div>
               <Avatar icon={<MapsPlace />} backgroundColor={indigo500} style={styles.avatarStyles}/>
               <List style={styles.listStyles}>
-                <ListItem style={styles.text}
+                <ListItem style={Design.inputText}
                   primaryText="Jl. Bypass Ngurah Rai gg. Mina Utama No. 1"
                   secondaryText="​Suwung 80223, Bali​"
                 />
@@ -322,116 +310,114 @@ class EmployeeDialog extends Component {
           return (
             <div>
             <div style={styles.leftColumn}>
+                <input type="hidden" id="employeeId" value={this.state.employee.id}/>
                 <TextField
-                  style={styles.text}
+                  style={Design.inputText}
                   hintText="First Name"
                   floatingLabelText="First Name"
                   floatingLabelFixed={true}
-                  floatingLabelStyle={styles.floatingLabelStyle}
-                  errorText={this.state.firstName=== ''?this.state.isRequired:''}
+                  floatingLabelStyle={Design.floatingText}
+                  errorText={this.state.employee.firstName=== ''?this.state.isRequired:''}
                   errorStyle={styles.errorStyle}
-                  onChange={this.handleChangeFirstName.bind(this)}
+                  onChange={event => this.handleChangeValue(event, 'firstName')}
                 />
                 <br/>
                 <TextField
-                  style={styles.text}
+                  style={Design.inputText}
                   hintText="Last Name"
                   floatingLabelText="Last Name"
                   floatingLabelFixed={true}
-                  floatingLabelStyle={styles.floatingLabelStyle}
-                  errorText={this.state.lastName=== ''?this.state.isRequired:''}
+                  floatingLabelStyle={Design.floatingText}
+                  errorText={this.state.employee.lastName=== ''?this.state.isRequired:''}
                   errorStyle={styles.errorStyle}
-                  onChange={this.handleChangeLastName.bind(this)}
+                  onChange={event => this.handleChangeValue(event, 'lastName')}
                 />
                 <br/>
                 <SelectField floatingLabelText="Gender"
-                  style={styles.text}
-                  floatingLabelStyle={styles.floatingLabelStyle}
-                  value={this.state.value}
-                  onChange={this.handleChange}>
-                  <MenuItem style={styles.itemStyles} value={"Male"} primaryText="Male" />
-                  <MenuItem style={styles.itemStyles} value={"Female"} primaryText="Female" />
+                  style={Design.inputText}
+                  floatingLabelStyle={Design.floatingText}
+                  value={this.state.employee.gender}
+                  onChange={(event, index, value) => this.handleChangeSelectValue(event, index, value, 'gender')}>
+                  <MenuItem style={Design.menuItemText} value={"Male"} primaryText="Male" />
+                  <MenuItem style={Design.menuItemText} value={"Female"} primaryText="Female" />
                 </SelectField>
                 <br/>
                   <DatePicker
-                    textFieldStyle={styles.text}
+                    textFieldStyle={Design.inputText}
                     floatingLabelText="Date of Birth"
                     floatingLabelFixed={true}
-                    floatingLabelStyle={styles.floatingLabelStyle}
+                    floatingLabelStyle={Design.floatingText}
                     hintText="Date of Birth"
                     container="inline"
-                    onChange={this.handleChangeDOB.bind(this)}/>
+                    onChange={(event, date) => this.handleChangeDateValue(event, date, 'dob')}/>
                   <TextField
-                    style={styles.text}
+                    style={Design.inputText}
                     hintText="Nationality"
                     floatingLabelText="Nationality"
                     floatingLabelFixed={true}
-                    floatingLabelStyle={styles.floatingLabelStyle}
-                    onChange={this.handleChangeNationality.bind(this)}
+                    floatingLabelStyle={Design.floatingText}
+                    onChange={event => this.handleChangeValue(event, 'nationality')}
                   />
                 <br/>
                   <SelectField floatingLabelText="Marital Status"
-                    style={styles.text}
-                    floatingLabelStyle={styles.floatingLabelStyle}
-                    value={this.state.marital}
-                    onChange={this.handleChangeMarital}>
-                    <MenuItem style={styles.itemStyles} value={"Single"} primaryText="Single" />
-                    <MenuItem style={styles.itemStyles} value={"Married"} primaryText="Married" />
-                    <MenuItem style={styles.itemStyles} value={"Widow"} primaryText="Widow" />
+                    style={Design.inputText}
+                    floatingLabelStyle={Design.floatingText}
+                    value={this.state.employee.maritalStatus}
+                    onChange={(event, index, value) => this.handleChangeSelectValue(event, index, value, 'maritalStatus')}>
+                    <MenuItem style={Design.menuItemText} value={"Single"} primaryText="Single" />
+                    <MenuItem style={Design.menuItemText} value={"Married"} primaryText="Married" />
+                    <MenuItem style={Design.menuItemText} value={"Widow"} primaryText="Widow" />
                   </SelectField>
                 <br/>
                   <TextField
-                    style={styles.text}
+                    style={Design.inputText}
                     hintText="Phone Number"
                     floatingLabelText="Phone"
                     floatingLabelFixed={true}
-                    floatingLabelStyle={styles.floatingLabelStyle}
-                    errorText={this.state.phone=== ''?this.state.isRequired:''}
+                    floatingLabelStyle={Design.floatingText}
+                    errorText={this.state.employee.phone=== ''?this.state.isRequired:''}
                     errorStyle={styles.errorStyle}
-                    onChange={this.handleChangePhone.bind(this)}
+                    onChange={event => this.handleChangeValue(event, 'phone')}
                   />
             </div>
             <div style={styles.rightColumn}>
-                <TextField style={styles.text}
+                <TextField style={Design.inputText}
                   hintText="Sub Division"
                   floatingLabelText="Sub Division"
                   floatingLabelFixed={true}
-                  floatingLabelStyle={styles.floatingLabelStyle}
-                  onChange={this.handleChangeSubDivision.bind(this)}
+                  floatingLabelStyle={Design.floatingText}
+                  onChange={event => this.handleChangeValue(event, 'subDivision')}
                 />
                 <br/>
-                <SelectField style={styles.text}
+                <SelectField style={Design.inputText}
                   floatingLabelText="Status"
-                  floatingLabelStyle={styles.floatingLabelStyle}
-                  value={this.state.status}
-                  onChange={this.handleChangeStatus}>
-                  <MenuItem style={styles.itemStyles} value={"Contract"} primaryText="Contract" />
-                  <MenuItem style={styles.itemStyles} value={"Permanent"} primaryText="Permanent" />
+                  floatingLabelStyle={Design.floatingText}
+                  value={this.state.employee.status}
+                  onChange={(event, index, value) => this.handleChangeSelectValue(event, index, value, 'status')}>
+                  <MenuItem style={Design.menuItemText} value={"Contract"} primaryText="Contract" />
+                  <MenuItem style={Design.menuItemText} value={"Permanent"} primaryText="Permanent" />
                 </SelectField>
                 <br/>
-                  <DatePicker textFieldStyle={styles.text} floatingLabelText="Suspend Date" floatingLabelStyle={styles.floatingLabelStyle} floatingLabelFixed={true} hintText="Suspend Date" container="inline" />
-                  <DatePicker textFieldStyle={styles.text} floatingLabelText="Hired Date" floatingLabelStyle={styles.floatingLabelStyle} floatingLabelFixed={true} hintText="Hired Date" container="inline" />
-                  <SelectField style={styles.text} floatingLabelText="Grade" floatingLabelStyle={styles.floatingLabelStyle} value={this.state.grade} onChange={this.handleChangeGrade}>
-                    <MenuItem style={styles.itemStyles} value={"SE-JP"} primaryText="SE-JP" />
-                    <MenuItem style={styles.itemStyles} value={"SE-PG"} primaryText="SE-PG" />
-                    <MenuItem style={styles.itemStyles} value={"SE-AP"} primaryText="SE-AP" />
-                    <MenuItem style={styles.itemStyles} value={"SE-AN"} primaryText="SE-AN" />
-                  </SelectField>
+                  <DatePicker textFieldStyle={Design.inputText} floatingLabelText="Suspend Date" floatingLabelStyle={Design.floatingText} floatingLabelFixed={true} hintText="Suspend Date" container="inline" onChange={(event, date) => this.handleChangeDateValue(event, date, 'suspendDate')} />
+                  <DatePicker textFieldStyle={Design.inputText} floatingLabelText="Hired Date" floatingLabelStyle={Design.floatingText} floatingLabelFixed={true} hintText="Hired Date" container="inline" onChange={(event, date) => this.handleChangeDateValue(event, date, 'hiredDate')}/>
+                  <JobFamilyDropDown employees={this.state.employees} employee={this.state.employee} setNewEmployee={this.setNewEmployee.bind(this)}/>
                   <br/>
-                    <SelectField style={styles.text} floatingLabelText="Division" floatingLabelStyle={styles.floatingLabelStyle} value={this.state.division} onChange={this.handleChangeDivision}>
-                      <MenuItem style={styles.itemStyles} value={"CDC Asterx"} primaryText="CDC Asterx" />
-                      <MenuItem style={styles.itemStyles} value={"SWD Blue"} primaryText="SWD Blue" />
-                      <MenuItem style={styles.itemStyles} value={"SWD Red Infomedia"} primaryText="SWD Red Infomedia" />
-                      <MenuItem style={styles.itemStyles} value={"SWD Green"} primaryText="SWD Green" />
-                      <MenuItem style={styles.itemStyles} value={"SWD Techone"} primaryText="SWD Techone" />
+                    <SelectField style={Design.inputText} floatingLabelText="Division" floatingLabelStyle={Design.floatingText} value={this.state.employee.division} onChange={(event, index, value) => this.handleChangeSelectValue(event, index, value, 'division')}>
+                      <MenuItem style={Design.menuItemText} value={"CDC Asterx"} primaryText="CDC Asterx" />
+                      <MenuItem style={Design.menuItemText} value={"SWD Blue"} primaryText="SWD Blue" />
+                      <MenuItem style={Design.menuItemText} value={"SWD Red Infomedia"} primaryText="SWD Red Infomedia" />
+                      <MenuItem style={Design.menuItemText} value={"SWD Green"} primaryText="SWD Green" />
+                      <MenuItem style={Design.menuItemText} value={"SWD Techone"} primaryText="SWD Techone" />
                     </SelectField>
                   <br/>
-                    <TextField style={styles.text}
+                    <TextField style={Design.inputText}
                       hintText="Email"
                       floatingLabelText="Email"
                       floatingLabelFixed={true}
-                      floatingLabelStyle={styles.floatingLabelStyle}
-                      onChange={this.handleChangeEmail.bind(this)}
+                      floatingLabelStyle={Design.floatingText}
+                      onChange={event => this.handleChangeValue(event, 'email')}
+                      errorText={this.state.employee.email=== ''?this.state.isRequired:''}
+                      errorStyle={styles.errorStyle}
                     />
             </div>
             <div style={styles.thirdColumn}>
@@ -449,7 +435,11 @@ class EmployeeDialog extends Component {
           case 1:
               return 'History';
           case 2:
-              return 'Grade';
+              return(
+                <div style={styles.leftColumn}>
+                  <GradeDialog dialogMode={true} employees={this.state.employees} employee={this.state.employee} setNewEmployee={this.setNewEmployee.bind(this)}/>
+                </div>
+              );
           case 3:
               return 'Family member';
           case 4:
@@ -458,17 +448,17 @@ class EmployeeDialog extends Component {
           return (
             <div style={styles.leftColumn}>
                   <SelectField
-                      style={styles.text}
-                      value={this.state.location}
+                      style={Design.inputText}
+                      value={this.state.employee.location}
                       floatingLabelText="Location"
-                      floatingLabelStyle={styles.floatingLabelStyle}
-                      onChange={this.handleChangeOffice.bind(this)} >
-                      <MenuItem style={styles.itemStyles} value={"JKT"} primaryText="Jakarta" />
-                      <MenuItem style={styles.itemStyles} value={"YOG"} primaryText="Yogyakarta" />
-                      <MenuItem style={styles.itemStyles} value={"BDG"} primaryText="Bandung" />
-                      <MenuItem style={styles.itemStyles} value={"BALI"} primaryText="Bali" />
+                      floatingLabelStyle={Design.floatingText}
+                      onChange={(event, index, value) => this.handleChangeSelectValue(event, index, value, 'location')}>
+                      <MenuItem style={Design.menuItemText} value={"JKT"} primaryText="Jakarta" />
+                      <MenuItem style={Design.menuItemText} value={"YOG"} primaryText="Yogyakarta" />
+                      <MenuItem style={Design.menuItemText} value={"BDG"} primaryText="Bandung" />
+                      <MenuItem style={Design.menuItemText} value={"BALI"} primaryText="Bali" />
                   </SelectField>
-              {this.getOfficeAddress(this.state.location)}
+              {this.getOfficeAddress(this.state.employee.location)}
             </div>
             );
           }

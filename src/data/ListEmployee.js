@@ -27,23 +27,24 @@ class ListEmployee extends Component {
   constructor(props, context) {
     super(props, context);
 
-    this.state = {
-      employee : this.props.employee,
-    };
+  }
+
+  handleTouchTap(currentEmployee){
+    this.props.setCurrentEmployee(currentEmployee);
   }
 
   render(){
     return(
       <Paper zDepth={1}>
-          <List style={styles.listStyles} key={this.state.employee.id}>
+          <List style={styles.listStyles} key={this.props.employee.id}>
             <ListItem style={styles.listStyles}
-              leftAvatar={<Avatar src={this.state.employee.img} />}
-               onClick={this.props.handleTouchTap.bind(this, this.props.employee)}
+              leftAvatar={<Avatar src={this.props.employee.img} />}
+               onClick={this.handleTouchTap.bind(this, this.props.employee)}
             >
-              <span style={styles.fontStyle}>{this.state.employee.firstName} {this.state.employee.lastName}<br/></span>
+              <span style={styles.fontStyle}>{this.props.employee.firstName} {this.props.employee.lastName}<br/></span>
               <span style={styles.secondaryFontStyle}>
-                {this.state.employee.grade}, {this.state.employee.division}<br/>
-                {this.state.employee.location}, {this.state.employee.phone}
+                {this.props.employee.grade}, {this.props.employee.division}<br/>
+                {this.props.employee.location}, {this.props.employee.phone}
               </span>
             </ListItem>
           <Divider/>
