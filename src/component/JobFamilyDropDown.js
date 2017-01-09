@@ -6,22 +6,31 @@ import SelectField from 'material-ui/SelectField';
 
 import Design from '../data/Design';
 
-let provinces = [
+let lookups = [
   {
-    key: 'SE',
+    data_type: 'JF',
+    data_code: 'SE',
     desc: 'Software Engineering'
   },
   {
-    key: 'SQ',
+    data_type: 'JF',
+    data_code: 'SQ',
     desc: 'Software Quality'
   },
   {
-    key: 'CON',
+    data_type: 'JF',
+    data_code: 'CON',
     desc: 'Consultant'
   },
   {
-    key: 'MJF',
+    data_type: 'JF',
+    data_code: 'MJF',
     desc: 'Manager'
+  },
+  {
+    data_type: 'JF',
+    data_code: 'DIR',
+    desc: 'Director'
   },
 ];
 
@@ -29,14 +38,14 @@ export default class JobFamilyDropDown extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
-            province: provinces[0],
+            province: lookups[0],
         };
     }
 
     _onProvinceSelected(e, index, value) {
         e.preventDefault();
-        this.setState({province: provinces[index]});
-        this.handleChangeSelectValue(e,index,value,'jobFamily');
+        this.setState({province: lookups[index]});
+        this.props.handleChangeSelectValue(e,index,value,'jobFamily');
     }
 
     handleChangeSelectValue(event, index, value, type) {
@@ -48,34 +57,26 @@ export default class JobFamilyDropDown extends React.Component {
 
     _createProvinceMenuItems() {
         let menuItems = [];
-        for (let province of provinces) {
-            // let itemIndex = provinces.indexOf(province);
-            let item = (
-                <MenuItem
-                    value={province.key}
-                    key={province.key}
-                    primaryText={province.desc} />
-            );
-            menuItems.push(item);
+        for (let province of lookups) {
+            // let itemIndex = lookups.indexOf(province);
+            if(province.data_type === 'JF'){
+              let item = (
+                  <MenuItem
+                      value={province.data_code}
+                      key={province.data_code}
+                      primaryText={province.desc} />
+              );
+              menuItems.push(item);
+            }
         }
 
         return menuItems;
     }
 
-    getIndexProvince(jobFamily){
-      let indexProvince = 0;
-      for (let province of provinces) {
-        if(province.key === jobFamily){
-          indexProvince = provinces.indexOf(province);
-        }
-      }
-      return indexProvince;
-    }
-
     render() {
          return (
                <SelectField
-                   value={this.state.province.key}
+                   value={this.state.province.data_code}
                    style={Design.inputText}
                    floatingLabelText="Job Family"
                    floatingLabelStyle={Design.floatingText}

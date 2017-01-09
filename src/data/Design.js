@@ -6,9 +6,19 @@ export default {
     paddingLeft: 100,
   },
 
+  firstColumn: {
+    float: 'left',
+    paddingTop: 0,
+    paddingLeft: 100,
+  },
+
   floatingText: {
     fontSize: 18,
     color: black,
+  },
+
+  hidden: {
+    display: 'none',
   },
 
   inputText: {
@@ -31,8 +41,32 @@ export default {
     fontSize: 12,
   },
 
+  secondColumn: {
+    float: 'left',
+    paddingTop: 0,
+    position: 'relative',
+    paddingLeft: 80,
+  },
+
+  show: {
+    display: 'inline-block',
+  },
+  
   textLocation:{
     fontSize: 14,
     paddingLeft: 100,
+  },
+
+  thirdColumn: {
+    float: 'left',
+    paddingTop: 0,
+    position: 'relative',
+    paddingLeft: 80,
+  },
+
+  toolbar: {
+    backgroundColor: indigo400,
+    position: 'relative',
+    width: '100%',
   },
 };

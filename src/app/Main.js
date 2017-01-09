@@ -45,6 +45,7 @@ import {List, ListItem} from 'material-ui/List';
 //other component or file
 import EmployeeTab from '../component/EmployeeTab'
 import EmployeeDialog from '../component/EmployeeDialog'
+import GradeTab from '../component/GradeTab'
 import LocationTab from '../component/LocationTab'
 
 const employeesData = [
@@ -66,7 +67,9 @@ const employeesData = [
     suspendDate: new Object,
     hiredDate: new Date(2013,6,3),
     grade: 'SE-PG',
+    startDate: new Date(2013,6,3),
     jobFamily: 'SE',
+    devstage: 'DS7',
   },
   {
     id: 'karmilla_el_zara',
@@ -86,7 +89,9 @@ const employeesData = [
     suspendDate: new Object,
     hiredDate: new Date(2013,6,3),
     grade: 'SE-AP',
+    startDate: new Date(2013,6,3),
     jobFamily: 'SE',
+    devstage: 'DS10',
   },
 ];
 
@@ -423,7 +428,14 @@ class Main extends Component {
                   />
                 </Tab>
                 <Tab style={styles.tab} icon={<ActionRestore/>} />
-                <Tab style={styles.tab} icon={<SocialSchool/>} />
+                <Tab style={styles.tab} icon={<SocialSchool/>}>
+                  <GradeTab
+                    employees={this.state.employees}
+                    employee={this.state.employee}
+                    setEmployees={this.setEmployees.bind(this)}
+                    setCurrentEmployee={this.setCurrentEmployee.bind(this)}
+                  />
+                </Tab>
                 <Tab style={styles.tab} icon={<NotificationWc/>} />
                 <Tab style={styles.tab} icon={<ActionHome/>} />
                 <Tab style={styles.tab} icon={<MapsPlace/>}>
@@ -432,7 +444,6 @@ class Main extends Component {
                     employee={this.state.employee}
                     setEmployees={this.setEmployees.bind(this)}
                     setCurrentEmployee={this.setCurrentEmployee.bind(this)}
-
                   />
                 </Tab>
               </Tabs>

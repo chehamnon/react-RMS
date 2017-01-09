@@ -16,43 +16,6 @@ import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui
 import Design from '../data/Design';
 import GradeDialog from '../component/GradeDialog';
 
-const styles = {
-
-  firstColumn: {
-    float: 'left',
-    paddingTop: 0,
-    paddingLeft: 100,
-  },
-
-  secondColumn: {
-    float: 'left',
-    paddingTop: 0,
-    position: 'relative',
-    paddingLeft: 80,
-  },
-
-  thirdColumn: {
-    float: 'left',
-    paddingTop: 0,
-    position: 'relative',
-    paddingLeft: 80,
-  },
-
-  toolbar: {
-    backgroundColor: indigo400,
-    position: 'relative',
-    width: '100%',
-  },
-
-  hidden: {
-    display: 'none',
-  },
-
-  show: {
-    display: 'inline-block',
-  },
-}
-
 class EmployeeTab extends Component {
   constructor(props, context) {
     super(props, context);
@@ -168,7 +131,7 @@ class EmployeeTab extends Component {
     return(
       <div>
         <div>
-          <div style={styles.firstColumn}>
+          <div style={Design.firstColumn}>
             <input type="hidden" id="employeeId" value={this.props.employee.id}/>
             <TextField
               value = {this.props.employee.firstName}
@@ -245,7 +208,7 @@ class EmployeeTab extends Component {
                 errorText={this.props.employee.phone=== ''?this.state.isRequired:''}
               />
           </div>
-          <div style={styles.secondColumn}>
+          <div style={Design.secondColumn}>
             <TextField style={Design.rightInputText}
               hintText="Sub Division"
               value = {this.props.employee.subDivision}
@@ -283,7 +246,7 @@ class EmployeeTab extends Component {
                 value={this.props.employee.hiredDate}
                 container="inline"
                 disabled={this.state.disabled}/>
-              <GradeDialog disabled={this.state.disabled} dialogMode={false} employees={this.props.employees} employee={this.props.employee} setCurrentEmployee={this.props.setCurrentEmployee.bind(this)}/>
+                <GradeDialog employee={this.props.employee}/>
               <br/>
                 <SelectField style={Design.rightInputText}
                   floatingLabelText="Division"
@@ -310,7 +273,7 @@ class EmployeeTab extends Component {
                   errorText={this.props.employee.email=== ''?this.state.isRequired:''}
                 />
           </div>
-          <div style={styles.thirdColumn}>
+          <div style={Design.thirdColumn}>
               {!this.state.disabled == true ? <div>
                 <Dropzone onDrop={this.onDrop.bind(this)}>
                   <div>Drop or Click here to edit photo</div>
@@ -322,13 +285,13 @@ class EmployeeTab extends Component {
           </div>
         </div>
         <div>
-          <Toolbar style={styles.toolbar}>
+          <Toolbar style={Design.toolbar}>
             <ToolbarGroup />
             <ToolbarGroup>
-                <RaisedButton label="Edit" secondary={true} onClick={this.editClick.bind(this)} style={this.state.disabled? styles.show : styles.hidden}/>
-                <RaisedButton label="Delete" secondary={true} onClick={this.deleteClick.bind(this)} style={this.state.disabled? styles.show : styles.hidden}/>
-                <RaisedButton label="Cancel" secondary={true} onClick={this.cancelClick.bind(this)} style={this.state.disabled? styles.hidden : styles.show}/>
-                <RaisedButton label="Save" secondary={true} onClick={this.saveClick.bind(this)} style={this.state.disabled? styles.hidden : styles.show}/>
+                <RaisedButton label="Edit" secondary={true} onClick={this.editClick.bind(this)} style={this.state.disabled? Design.show : Design.hidden}/>
+                <RaisedButton label="Delete" secondary={true} onClick={this.deleteClick.bind(this)} style={this.state.disabled? Design.show : Design.hidden}/>
+                <RaisedButton label="Cancel" secondary={true} onClick={this.cancelClick.bind(this)} style={this.state.disabled? Design.hidden : Design.show}/>
+                <RaisedButton label="Save" secondary={true} onClick={this.saveClick.bind(this)} style={this.state.disabled? Design.hidden : Design.show}/>
             </ToolbarGroup>
           </Toolbar>
         </div>

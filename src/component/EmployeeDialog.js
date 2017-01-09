@@ -28,7 +28,8 @@ import {pink500, indigo500, indigo100, indigo400, white} from 'material-ui/style
 import {Step, Stepper, StepButton} from 'material-ui/Stepper';
 
 import Design from '../data/Design';
-import GradeDialog from '../component/GradeDialog';
+import lookups from '../data/lookups';
+import DevStageDropDown from '../component/DevStageDropDown';
 import JobFamilyDropDown from '../component/JobFamilyDropDown';
 
 const styles = {
@@ -114,6 +115,8 @@ class EmployeeDialog extends Component {
          suspendDate: new Object,
          hireDate: new Object,
          grade: 'SE-JP',
+         devstage: 'DS1',
+         startDate: new Object,
          division: 'CDC Asterx',
          email: '',
          location: 'BALI',
@@ -154,6 +157,8 @@ class EmployeeDialog extends Component {
          suspendDate: new Object,
          hireDate: new Object,
          grade: 'SE-JP',
+         devstage: 'DS1',
+         startDate: new Object,
          division: 'CDC Asterx',
          email: '',
          jobFamily: '',
@@ -161,6 +166,20 @@ class EmployeeDialog extends Component {
          img: this.state.files.length > 0 ? this.state.employee.img : require("../images/person-flat.png"),
        }
     });
+  }
+
+  setGrade(employee) {
+    let setgrade = '';
+    for (let lookup of lookups) {
+        if((lookup.data_type === 'GRADE')&&(lookup.assoc_val_1 === employee.jobFamily)){
+          if(lookup.ds.indexOf(employee.devstage) > -1){
+            setgrade = lookup.data_code;
+            console.log("GRADE"+setgrade);
+
+          }
+        }
+    }
+    return setgrade;
   }
 
   setNewEmployee(newEmployee) {
@@ -197,8 +216,9 @@ class EmployeeDialog extends Component {
     let generatedId = this.state.employee.firstName +" "+ this.state.employee.lastName;
     let image= this.state.files.length > 0 ? this.state.files[0].preview : this.state.employee.img;
     generatedId= generatedId.replace(/ /g, '_');
+    var setgrade= this.setGrade(this.state.employee);
     var newEmployee = update(this.state, {
-     employee: {id: {$set: generatedId}, img: {$set: image}}
+     employee: {id: {$set: generatedId}, img: {$set: image}, grade: {$set: setgrade}}
     });
     var employeesData = this.props.employees
     console.log(newEmployee);
@@ -238,6 +258,7 @@ class EmployeeDialog extends Component {
         this.setState({
           employee: nextState.employee,
         })
+        console.log(this.state.employee);
   }
 
   handleChangeDateValue(event, date, type) {
@@ -400,7 +421,7 @@ class EmployeeDialog extends Component {
                 <br/>
                   <DatePicker textFieldStyle={Design.inputText} floatingLabelText="Suspend Date" floatingLabelStyle={Design.floatingText} floatingLabelFixed={true} hintText="Suspend Date" container="inline" onChange={(event, date) => this.handleChangeDateValue(event, date, 'suspendDate')} />
                   <DatePicker textFieldStyle={Design.inputText} floatingLabelText="Hired Date" floatingLabelStyle={Design.floatingText} floatingLabelFixed={true} hintText="Hired Date" container="inline" onChange={(event, date) => this.handleChangeDateValue(event, date, 'hiredDate')}/>
-                  <JobFamilyDropDown employees={this.state.employees} employee={this.state.employee} setNewEmployee={this.setNewEmployee.bind(this)}/>
+                  <JobFamilyDropDown employees={this.state.employees} employee={this.state.employee} handleChangeSelectValue={this.handleChangeSelectValue.bind(this)}/>
                   <br/>
                     <SelectField style={Design.inputText} floatingLabelText="Division" floatingLabelStyle={Design.floatingText} value={this.state.employee.division} onChange={(event, index, value) => this.handleChangeSelectValue(event, index, value, 'division')}>
                       <MenuItem style={Design.menuItemText} value={"CDC Asterx"} primaryText="CDC Asterx" />
@@ -437,7 +458,16 @@ class EmployeeDialog extends Component {
           case 2:
               return(
                 <div style={styles.leftColumn}>
-                  <GradeDialog dialogMode={true} employees={this.state.employees} employee={this.state.employee} setNewEmployee={this.setNewEmployee.bind(this)}/>
+                  <DevStageDropDown dialogMode={true} employees={this.state.employees} employee={this.state.employee} handleChangeSelectValue={this.handleChangeSelectValue.bind(this)}/>
+                  <br/>
+                    <DatePicker
+                      textFieldStyle={Design.inputText}
+                      floatingLabelText="Start Date"
+                      floatingLabelFixed={true}
+                      floatingLabelStyle={Design.floatingText}
+                      hintText="Start Date"
+                      container="inline"
+                      onChange={(event, date) => this.handleChangeDateValue(event, date, 'startDate')}/>
                 </div>
               );
           case 3:
@@ -463,6 +493,7 @@ class EmployeeDialog extends Component {
             );
           }
         }
+
   render() {
     const standardActions = [
       <FlatButton
